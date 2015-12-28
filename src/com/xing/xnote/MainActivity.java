@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -46,6 +48,28 @@ public class MainActivity extends Activity implements OnClickListener{
 		butVideo.setOnClickListener(this);
 		dbHelper=new XnoteDbHelper(this);
 		dbReader=dbHelper.getReadableDatabase();
+		lv.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				cursor.moveToPosition(position);
+				Intent intent=new Intent(MainActivity.this,SitemActivity.class);
+				int getId=cursor.getInt(cursor.getColumnIndex(XnoteDbHelper.ID));
+				String content=cursor.getString(cursor.getColumnIndex(XnoteDbHelper.CONTENT));
+				String imageUri=cursor.getString(cursor.getColumnIndex(XnoteDbHelper.PATH));
+				String video=cursor.getString(cursor.getColumnIndex(XnoteDbHelper.VIDEO));
+				String time=cursor.getString(cursor.getColumnIndex(XnoteDbHelper.TIME));
+				intent.putExtra(XnoteDbHelper.TIME, time);
+				intent.putExtra(XnoteDbHelper.CONTENT, content);
+				intent.putExtra(XnoteDbHelper.PATH, imageUri);
+				intent.putExtra(XnoteDbHelper.VIDEO,video);
+				intent.putExtra(XnoteDbHelper.ID, getId);
+				startActivity(intent);
+				
+				
+			}
+		});
 	}
 	public void queryDB(){
 		

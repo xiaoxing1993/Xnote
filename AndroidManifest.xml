@@ -30,6 +30,11 @@
             android:name="com.xing.xnote.AddContent"
             android:screenOrientation="portrait"
             ></activity>
+        
+        <activity 
+            android:name="com.xing.xnote.SitemActivity"
+            android:screenOrientation="portrait"
+            ></activity>
     </application>
 
 </manifest>

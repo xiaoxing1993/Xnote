@@ -5,12 +5,14 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 public class MyAdapter extends BaseAdapter{
 
@@ -62,12 +64,23 @@ public class MyAdapter extends BaseAdapter{
 		String content=mCursor.getString(mCursor.getColumnIndex(XnoteDbHelper.CONTENT));
 		String time=mCursor.getString(mCursor.getColumnIndex(XnoteDbHelper.TIME));
 		String path=mCursor.getString(mCursor.getColumnIndex(XnoteDbHelper.PATH));
+		String videoUri=mCursor.getString(mCursor.getColumnIndex(XnoteDbHelper.VIDEO));
 		viewHolder.content.setText(content);
 		viewHolder.time.setText(time);
+		viewHolder.video.setImageBitmap(getVideoThumbnail(videoUri, 200, 200,
+				        MediaStore.Images.Thumbnails.MICRO_KIND));
 		viewHolder.image.setImageBitmap(getImageThumbnail(path, 200, 200));
 		
 		return v;
 	}
+	private Bitmap getVideoThumbnail(String uri,int width,int height,int kind){
+		
+		Bitmap bitmap=null;
+		bitmap=ThumbnailUtils.createVideoThumbnail(uri, kind);
+		bitmap=ThumbnailUtils.extractThumbnail(bitmap, width, height,
+				ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+		return bitmap;
+	} 
 	public Bitmap getImageThumbnail(String uri,int width,int height){
 		
 		Bitmap bitmap=null;

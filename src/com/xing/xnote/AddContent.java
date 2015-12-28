@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.VideoView;
 
 public class AddContent extends Activity implements OnClickListener{
 
@@ -26,10 +27,10 @@ public class AddContent extends Activity implements OnClickListener{
 	private  Button butSave,butCancel;
 	private  EditText et;
 	private  ImageView ivImage;
-	private  ImageView ivVideo;
+	private  VideoView ivVideo;
 	private  XnoteDbHelper dbHelper;
 	private  SQLiteDatabase db;
-	private  File imageFile;
+	private  File imageFile,videoFile;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,6 +59,11 @@ public class AddContent extends Activity implements OnClickListener{
 			
 			ivImage.setVisibility(View.GONE);
 			ivVideo.setVisibility(View.VISIBLE);
+			Intent intent=new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+			videoFile=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"
+			                   +getTime()+".mp4");
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(videoFile));
+			startActivityForResult(intent, 3);
 		}
 	}
 	
@@ -67,7 +73,7 @@ public class AddContent extends Activity implements OnClickListener{
 		butCancel=(Button)findViewById(R.id.but_cancel);
 		et=(EditText)findViewById(R.id.et);
 		ivImage=(ImageView)findViewById(R.id.iv_image);
-		ivVideo=(ImageView)findViewById(R.id.iv_video);
+		ivVideo=(VideoView)findViewById(R.id.iv_video);
 		butSave.setOnClickListener(this);
 		butCancel.setOnClickListener(this);
 	}
@@ -77,6 +83,7 @@ public class AddContent extends Activity implements OnClickListener{
 		values.put(XnoteDbHelper.CONTENT, et.getText().toString());
 		values.put(XnoteDbHelper.TIME, getTime());
 		values.put(XnoteDbHelper.PATH, imageFile+"");
+		values.put(XnoteDbHelper.VIDEO, videoFile+"");
 		db.insert(XnoteDbHelper.TABLE_NAME, null, values);
 		
 	}
@@ -113,6 +120,10 @@ public class AddContent extends Activity implements OnClickListener{
 			Bitmap bitmap=BitmapFactory.decodeFile(imageFile.getAbsolutePath());
 			ivImage.setImageBitmap(bitmap);
 			
+		}
+		if(requestCode==3){
+			ivVideo.setVideoURI(Uri.fromFile(videoFile));
+			ivVideo.start();
 		}
 	}
 	
